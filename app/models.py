@@ -18,14 +18,13 @@ class Ticket(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     titulo = db.Column(db.String(150), nullable=False)
     descricao = db.Column(db.Text, nullable=False)
-    # Status padrão na criação
     status = db.Column(db.String(50), default='Aberto') 
     data_criacao = db.Column(db.DateTime, default=datetime.utcnow)
     
-    # Chave estrangeira ligando ao cliente (User)
-    cliente_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    # NOVA COLUNA: Armazena a avaliação de 1 a 5 (começa vazia)
+    nota = db.Column(db.Integer, nullable=True) 
     
-    # Relação com as respostas
+    cliente_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     respostas = db.relationship('Reply', backref='ticket_original', lazy=True)
 
 class Reply(db.Model):

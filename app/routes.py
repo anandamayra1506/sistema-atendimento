@@ -93,13 +93,26 @@ def ver_ticket(id):
     ticket = Ticket.query.get_or_404(id)
 
     if request.method == 'POST':
-        texto_resposta = request.form.get('texto')
-        resposta = Reply(texto=texto_resposta, ticket_id=ticket.id, autor_id=current_user.id)
-        db.session.add(resposta)
+        # Descobre qual botão o usuário apertou
+        acao = request.form.get('acao')
 
-        # Se um atendente responde, muda o status do chamado
-        if current_user.tipo == 'atendente':
-            ticket.status = 'Em Andamento'
+        if acao == 'responder':
+            texto_resposta = request.form.get('texto')
+            resposta = Reply(texto=texto_resposta, ticket_id=ticket.id, autor_id=current_user.id)
+            db.session.add(resposta)
+            # Muda para "Em Andamento" se um atendente responder um chamado "Aberto"
+            if current_user.tipo == 'atendente' and ticket.status == 'Aberto':
+                ticket.status = 'Em Andamento'
+
+        elif acao == 'resolver':
+            # Finaliza o chamado
+            ticket.status = 'Resolvido'
+
+        elif acao == 'avaliar':
+            # Salva as estrelinhas
+            nota = request.form.get('nota')
+            if nota and current_user.tipo == 'cliente':
+                ticket.nota = int(nota)
 
         db.session.commit()
         return redirect(url_for('main.ver_ticket', id=ticket.id))

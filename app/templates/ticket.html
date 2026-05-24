@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-md-10 mx-auto">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3>Chamado #{{ ticket.id }}</h3>
+            <a href="/" class="btn btn-outline-secondary btn-sm">Voltar ao Painel</a>
+        </div>
+
+        <div class="card shadow-sm mb-4 border-primary">
+            <div class="card-header text-white bg-primary d-flex justify-content-between">
+                <span><strong>{{ ticket.titulo }}</strong></span>
+                <span class="badge bg-light text-dark">{{ ticket.status }}</span>
+            </div>
+            <div class="card-body">
+                <p class="text-muted small mb-2">Aberto pelo cliente em {{ ticket.data_criacao.strftime('%d/%m/%Y às %H:%M') }}</p>
+                <p class="mb-0" style="white-space: pre-wrap;">{{ ticket.descricao }}</p>
+            </div>
+        </div>
+
+        <h5 class="mb-3">Interações</h5>
+        {% for resposta in ticket.respostas %}
+            <div class="card shadow-sm mb-3 {% if resposta.autor.tipo != 'cliente' %}border-info ms-5{% else %}me-5{% endif %}">
+                <div class="card-body py-2 px-3 bg-light">
+                    <div class="d-flex justify-content-between text-muted small mb-2 border-bottom pb-1">
+                        <strong>{{ resposta.autor.nome }} ({{ resposta.autor.tipo | capitalize }})</strong>
+                        <span>{{ resposta.data_resposta.strftime('%d/%m/%Y %H:%M') }}</span>
+                    </div>
+                    <p class="mb-1" style="white-space: pre-wrap;">{{ resposta.texto }}</p>
+                </div>
+            </div>
+        {% else %}
+            <p class="text-muted fst-italic">Nenhuma resposta ainda. Aguarde o atendimento.</p>
+        {% endfor %}
+
+        {% if ticket.status != 'Resolvido' %}
+            <div class="card shadow-sm mt-4 border-secondary">
+                <div class="card-body">
+                    <form method="POST" action="/ticket/{{ ticket.id }}">
+                        <input type="hidden" name="acao" value="responder">
+                        <div class="mb-3">
+                            <label for="texto" class="form-label">Adicionar nova resposta</label>
+                            <textarea class="form-control" id="texto" name="texto" rows="3" required placeholder="Digite sua resposta aqui..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Enviar Resposta</button>
+                    </form>
+                    
+                    <hr class="my-4">
+                    
+                    <form method="POST" action="/ticket/{{ ticket.id }}" class="text-end">
+                        <input type="hidden" name="acao" value="resolver">
+                        <span class="text-muted small me-2">O problema foi solucionado?</span>
+                        <button type="submit" class="btn btn-success">Marcar como Resolvido</button>
+                    </form>
+                </div>
+            </div>
+        {% else %}
+            <div class="card shadow-sm mt-4 border-success">
+                <div class="card-body text-center py-4">
+                    <h4 class="text-success mb-3">✅ Este chamado foi resolvido!</h4>
+                    
+                    {% if ticket.nota %}
+                        <div class="mb-2">
+                            <span class="text-muted">Avaliação do Cliente:</span>
+                            <div class="fs-3 text-warning">
+                                {% for i in range(ticket.nota) %}★{% endfor %}{% for i in range(5 - ticket.nota) %}☆{% endfor %}
+                            </div>
+                        </div>
+                    {% elif current_user.tipo == 'cliente' %}
+                        <form method="POST" action="/ticket/{{ ticket.id }}" class="d-inline-block text-start" style="min-width: 300px;">
+                            <input type="hidden" name="acao" value="avaliar">
+                            <label class="form-label text-muted d-block text-center mb-2">Como foi o seu atendimento?</label>
+                            <div class="input-group">
+                                <select class="form-select" name="nota" required>
+                                    <option value="" disabled selected>Escolha uma nota...</option>
+                                    <option value="5">5 Estrelas - Excelente</option>
+                                    <option value="4">4 Estrelas - Muito Bom</option>
+                                    <option value="3">3 Estrelas - Bom</option>
+                                    <option value="2">2 Estrelas - Ruim</option>
+                                    <option value="1">1 Estrela - Péssimo</option>
+                                </select>
+                                <button type="submit" class="btn btn-warning text-dark fw-bold">Avaliar</button>
+                            </div>
+                        </form>
+                    {% else %}
+                        <p class="text-muted mb-0">Aguardando a avaliação do cliente.</p>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

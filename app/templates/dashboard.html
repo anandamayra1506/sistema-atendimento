@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 mt-4">
+    <div>
+        <h2>Olá, {{ current_user.nome }}!</h2>
+        <span class="badge bg-secondary fs-6">Perfil: {{ current_user.tipo | capitalize }}</span>
+    </div>
+    
+    <div class="d-flex gap-2">
+        {% if current_user.tipo == 'cliente' %}
+            <a href="/ticket/novo" class="btn btn-success">Abrir Novo Chamado</a>
+        {% elif current_user.tipo == 'admin' %}
+            <a href="/admin/atendentes/novo" class="btn btn-primary">Cadastrar Atendente</a>
+            <a href="/admin/relatorios" class="btn btn-info text-white">Ver Relatórios</a>
+        {% endif %}
+        <a href="/logout" class="btn btn-outline-danger">Sair</a>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-white py-3">
+        <h5 class="mb-0">{% if current_user.tipo == 'cliente' %}Meus Chamados{% else %}Fila Global de Atendimento{% endif %}</h5>
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Título</th>
+                    <th>Status</th>
+                    <th>Abertura</th>
+                    <th class="text-end">Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ticket in tickets %}
+                <tr>
+                    <td>#{{ ticket.id }}</td>
+                    <td><strong>{{ ticket.titulo }}</strong></td>
+                    <td>
+                        {% if ticket.status == 'Aberto' %}
+                            <span class="badge bg-warning text-dark">Aberto</span>
+                        {% elif ticket.status == 'Em Andamento' %}
+                            <span class="badge bg-primary">Em Andamento</span>
+                        {% else %}
+                            <span class="badge bg-success">Resolvido</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ ticket.data_criacao.strftime('%d/%m/%Y %H:%M') }}</td>
+                    <td class="text-end">
+                        <a href="/ticket/{{ ticket.id }}" class="btn btn-sm btn-outline-primary">Ver Detalhes</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="text-center py-4 text-muted">Nenhum chamado encontrado.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
