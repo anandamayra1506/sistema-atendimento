@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app  # Mantém o código sincronizado em tempo real (Hot Reload)
+    environment:
+      - FLASK_APP=run.py
+      - FLASK_DEBUG=1
+      - ADMIN_EMAIL=admin@resolveai.com
+      - ADMIN_PASSWORD=senha_segura_123
