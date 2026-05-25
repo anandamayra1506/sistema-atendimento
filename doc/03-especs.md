@@ -28,3 +28,10 @@ O sistema possui três níveis estritos de acesso:
 Para garantir a escalabilidade do sistema ResolveAí e o alto desempenho computacional, a arquitetura foi otimizada com:
 * **Camada de Cache:** Utilização da biblioteca `Flask-Caching` para armazenar resultados de relatórios pesados (Dashboard). Isso reduz a carga de I/O no banco de dados durante picos de acesso.
 * **Processamento Assíncrono (Jobs e Filas):** Separação de rotinas web das rotinas em segundo plano. O processamento de disparos sistêmicos (como notificações de encerramento de tickets) é empurrado para filas (Background Workers), evitando que a tela do usuário congele.
+
+## 8. Diretrizes de Interface e Frontend (Melhorias)
+Para garantir usabilidade e acessibilidade, o frontend foi refatorado seguindo os princípios do Bootstrap 5:
+* **Responsividade:** Uso de classes `table-responsive` e *grid system* para garantir que o layout se adapte a dispositivos móveis (smartphones e tablets) sem quebra de conteúdo.
+* **Estados Vazios (Empty States):** Tratamento visual explícito para listas vazias (ex: quando um cliente não possui tickets), exibindo mensagens de *feedback* em vez de tabelas em branco.
+* **Acessibilidade:** Inclusão de atributos `aria-label` e rótulos (`<label>`) explícitos em todos os formulários de Cadastro e Login para navegação por leitores de tela.
+* **Validação Visual:** Formulários configurados com a tag `required` nativa do HTML5, garantindo *feedback* imediato caso o usuário tente enviar dados em branco.

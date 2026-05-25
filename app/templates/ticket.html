@@ -70,9 +70,9 @@
                     {% elif current_user.tipo == 'cliente' %}
                         <form method="POST" action="/ticket/{{ ticket.id }}" class="d-inline-block text-start" style="min-width: 300px;">
                             <input type="hidden" name="acao" value="avaliar">
-                            <label class="form-label text-muted d-block text-center mb-2">Como foi o seu atendimento?</label>
+                            <label for="notaAtendimento" class="form-label text-muted d-block text-center mb-2">Como foi o seu atendimento?</label>
                             <div class="input-group">
-                                <select class="form-select" name="nota" required>
+                                <select class="form-select" id="notaAtendimento" name="nota" required>
                                     <option value="" disabled selected>Escolha uma nota...</option>
                                     <option value="5">5 Estrelas - Excelente</option>
                                     <option value="4">4 Estrelas - Muito Bom</option>

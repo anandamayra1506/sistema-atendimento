@@ -31,3 +31,8 @@ Para manter os testes unitários isolados, rápidos e determinísticos, utilizar
 
 ## 4. Prevenção de Regressões
 A validação de alterações será automatizada. Qualquer nova modificação no código-fonte exigirá a execução do comando raiz `pytest`. A aprovação em 100% dos testes deste plano é requisito obrigatório para a consolidação de novas versões na branch `main`, evitando que futuras atualizações quebrem as regras de negócio já estabelecidas.
+
+## 5. Testes de Interface (Frontend)
+* **CT-FE-01 (Responsividade):** Simular o acesso ao Dashboard em resolução Mobile (360x640). A tabela de tickets não deve quebrar o layout, ativando a rolagem horizontal (`table-responsive`).
+* **CT-FE-02 (Estado Vazio):** Acessar a tela inicial com uma conta recém-criada (sem chamados). O sistema deve exibir o alerta amigável de "Nenhum chamado encontrado" ao invés da estrutura vazia da tabela.
+* **CT-FE-03 (Validação de Formulário):** Clicar no botão "Entrar" na tela de Login sem preencher os campos. O navegador deve reter a submissão e exibir o aviso nativo de "Preencha este campo" (`required`).
